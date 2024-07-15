@@ -1,0 +1,102 @@
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+import java.util.Vector;
+
+public class GUIDTable extends DefaultTableModel {
+    private final Vector dataVector;
+    private final Vector columnIdentifiers;
+
+    public GUIDTable(){
+        this.columnIdentifiers = new Vector();
+        this.columnIdentifiers.add("GUID");
+        this.columnIdentifiers.add("Notes");
+        this.dataVector = new Vector();
+    }
+    @Override
+    public String getValueAt(int RowIndex, int columnIndex){
+        Object[] row = (Object[]) this.dataVector.get(RowIndex);
+        return row[columnIndex].toString();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columnIdentifiers.size();
+    }
+
+    @Override
+    public int getRowCount(){
+        if (this.dataVector == null) {
+            return 0;
+        } else {
+            return this.dataVector.size();
+        }
+    }
+
+    @Override
+    public String getColumnName(int columnIndex) {
+        return (String) this.columnIdentifiers.get(columnIndex);
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        /*return switch (columnIndex) {
+            case 0 -> String.class;
+            case 1 -> String.class;
+            case 2 -> String.class;
+            default -> String.class;
+        };*/
+        return String.class;
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return false;
+    }
+
+    @Override
+    public void addTableModelListener(TableModelListener l) {
+
+    }
+
+    @Override
+    public void removeTableModelListener(TableModelListener l) {
+
+    }
+
+    public String[] checkGUID(String guid){
+        ArrayList<String> matches = new ArrayList<String>();
+        //iterate through all the items in the list to see if they match.
+        for (Object itemObject : this.dataVector) {
+            String[] item = (String[])itemObject;
+            if (item != null) {
+                if (guid.equals(item[0])){
+                    // MATCH has occurred
+                    System.out.print("MATCH MATCH MATCH");
+                    matches.add((String) item[1]);
+                }
+            }
+        }
+        String[] returnmatches = new String[matches.size()];
+        returnmatches = matches.toArray(returnmatches);
+        return returnmatches;
+    }
+
+    @Override
+    public void addRow(Object[] rowData){
+        // Manually append a value to the row
+        //Object[] fullRow = new Object[rowData.length+1];
+        //System.arraycopy(rowData,0,fullRow,0,rowData.length+1);
+        //fullRow[fullRow.length-1]="GREEN";
+        //super.addRow(fullRow);
+        //this.dataVector.addElement(rowData);
+        //this.dataVector.add(new String[]{"a", "a"});
+        this.dataVector.add(rowData);
+        fireTableDataChanged();
+    }
+
+    @Override
+    public void removeRow(int item){
+        this.dataVector.remove(item);
+    }
+}
