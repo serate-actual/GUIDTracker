@@ -109,6 +109,7 @@ public class GUIDTrackerTab {
                 addGUIDButton.setText("Add GUID");
                 // Deselect All rows
                 guidTable.clearSelection();
+                guidTable.revalidate();
                 guidTable.repaint();
             }
         });
@@ -127,6 +128,7 @@ public class GUIDTrackerTab {
                 guidField.setText("");
                 notesField.setText("");
                 guidTable.clearSelection();
+                guidTable.revalidate();
                 guidTable.repaint();
             }
         });

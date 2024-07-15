@@ -13,6 +13,14 @@ public class GUIDTable extends DefaultTableModel {
         this.columnIdentifiers.add("Notes");
         this.dataVector = new Vector();
     }
+
+    @Override
+    public void setValueAt(Object aValue, int row, int column){
+        Object[] item = (Object[]) this.dataVector.get(row);
+        item[column] = aValue;
+        this.dataVector.set(row, item);
+    }
+
     @Override
     public String getValueAt(int RowIndex, int columnIndex){
         Object[] row = (Object[]) this.dataVector.get(RowIndex);
@@ -72,7 +80,6 @@ public class GUIDTable extends DefaultTableModel {
             if (item != null) {
                 if (guid.equals(item[0])){
                     // MATCH has occurred
-                    System.out.print("MATCH MATCH MATCH");
                     matches.add((String) item[1]);
                 }
             }
@@ -92,11 +99,12 @@ public class GUIDTable extends DefaultTableModel {
         //this.dataVector.addElement(rowData);
         //this.dataVector.add(new String[]{"a", "a"});
         this.dataVector.add(rowData);
-        fireTableDataChanged();
+        this.fireTableDataChanged();
     }
 
     @Override
     public void removeRow(int item){
         this.dataVector.remove(item);
+        this.fireTableDataChanged();
     }
 }
