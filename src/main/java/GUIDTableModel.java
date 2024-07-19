@@ -1,13 +1,14 @@
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
 
-public class GUIDTable extends DefaultTableModel {
+public class GUIDTableModel extends DefaultTableModel {
     private final Vector dataVector;
     private final Vector columnIdentifiers;
 
-    public GUIDTable(){
+    public GUIDTableModel(){
         this.columnIdentifiers = new Vector();
         this.columnIdentifiers.add("GUID");
         this.columnIdentifiers.add("Notes");
@@ -19,6 +20,7 @@ public class GUIDTable extends DefaultTableModel {
         Object[] item = (Object[]) this.dataVector.get(row);
         item[column] = aValue;
         this.dataVector.set(row, item);
+        this.fireTableDataChanged();
     }
 
     @Override
@@ -72,23 +74,6 @@ public class GUIDTable extends DefaultTableModel {
 
     }
 
-    public String[] checkGUID(String guid){
-        ArrayList<String> matches = new ArrayList<String>();
-        //iterate through all the items in the list to see if they match.
-        for (Object itemObject : this.dataVector) {
-            String[] item = (String[])itemObject;
-            if (item != null) {
-                if (guid.equals(item[0])){
-                    // MATCH has occurred
-                    matches.add((String) item[1]);
-                }
-            }
-        }
-        String[] returnmatches = new String[matches.size()];
-        returnmatches = matches.toArray(returnmatches);
-        return returnmatches;
-    }
-
     @Override
     public void addRow(Object[] rowData){
         // Manually append a value to the row
@@ -107,4 +92,43 @@ public class GUIDTable extends DefaultTableModel {
         this.dataVector.remove(item);
         this.fireTableDataChanged();
     }
+
+    public String[] checkGUID(String guid){
+        ArrayList<String> matches = new ArrayList<String>();
+        //iterate through all the items in the list to see if they match.
+        for (Object itemObject : this.dataVector) {
+            String[] item = (String[])itemObject;
+            if (item != null) {
+                if (guid.equals(item[0])){
+                    // MATCH has occurred
+                    matches.add((String) item[1]);
+                }
+            }
+        }
+        String[] returnmatches = new String[matches.size()];
+        returnmatches = matches.toArray(returnmatches);
+        return returnmatches;
+    }
+
+    public String[] getColumnIdentifiers(){
+        return Arrays.copyOf(this.columnIdentifiers.toArray(),this.columnIdentifiers.size(),String[].class);
+    }
+
+    public ArrayList<String> getColumnData(int columnIndex){
+       ArrayList<String> columnData = new ArrayList<>();
+       for (Object itemObject : this.dataVector){
+           String[] item = (String[])itemObject;
+           columnData.add(item[columnIndex]);
+       }
+       return columnData;
+    }
+
+    public void setFromColumnData(ArrayList<String> guids, ArrayList<String> notes){
+        int i;
+        for(i = 0; i < guids.size(); i++){
+            System.out.println(guids.get(i));
+            System.out.println(notes.get(i));
+        }
+    }
+
 }

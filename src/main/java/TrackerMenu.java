@@ -12,8 +12,8 @@ import java.util.List;
 
 public class TrackerMenu implements ContextMenuItemsProvider {
     private final MontoyaApi api;
-    private final GUIDTable guidDataModel;
-    public TrackerMenu(MontoyaApi api, GUIDTable guidDataModel){
+    private final GUIDTableModel guidDataModel;
+    public TrackerMenu(MontoyaApi api, GUIDTableModel guidDataModel){
         this.api = api;
         this.guidDataModel = guidDataModel;
     }
@@ -46,7 +46,6 @@ public class TrackerMenu implements ContextMenuItemsProvider {
             @Override
             public void mouseReleased(MouseEvent e) {
                 guidDataModel.addRow(new String[]{getSelection(event),"Go to the GUID Tracker tab and set the value"});
-                guidDataModel.fireTableDataChanged();
             }
         });
         menuItemList.add(Register);

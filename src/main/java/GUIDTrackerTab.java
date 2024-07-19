@@ -1,9 +1,9 @@
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableModelEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
 
 public class GUIDTrackerTab {
     private JPanel ui;
@@ -12,18 +12,33 @@ public class GUIDTrackerTab {
     private JTextField guidField;
     private JTextField notesField;
     private JButton deleteGUIDButton;
-    private GUIDTable datamodel;
+    private GUIDTableModel datamodel;
 
     public GUIDTrackerTab(){
     }
 
-    public GUIDTable getDataModel(){
+    public GUIDTableModel getDataModel(){
         return this.datamodel;
     }
     public JPanel getUI(){
         return this.ui;
     }
 
+    public JButton getAddGUIDButton(){
+        return this.addGUIDButton;
+    }
+
+    public JTextField getGuidField(){
+        return this.guidField;
+    }
+
+    public JTextField getNotesField(){
+        return this.notesField;
+    }
+
+    public JButton getDeleteGUIDButton(){
+        return this.deleteGUIDButton;
+    }
 
     private void createUIComponents( ) {
         // TODO: place custom component creation code here
@@ -40,23 +55,34 @@ public class GUIDTrackerTab {
 
 
         };*/
-        this.datamodel = new GUIDTable();
+        this.datamodel = new GUIDTableModel();
         this.guidTable = new JTable(datamodel){
+
+            @Override
+            public void tableChanged(TableModelEvent e){
+                System.out.println("SOMETHING IS HAPPENING");
+                System.out.println(e.getType());
+                super.tableChanged(e);
+                this.revalidate();
+                this.repaint();
+            }
+
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (guidTable.getSelectedRow() != -1) {
+                if (this.getSelectedRow() != -1) {
                     // A row is selected, enable deletion
                     deleteGUIDButton.setEnabled(true);
-                    if (guidTable.getSelectedRowCount() == 1) {
+                    if (this.getSelectedRowCount() == 1) {
                         // one row is
                         addGUIDButton.setText("Edit GUID");
-                        guidField.setText(String.valueOf(guidTable.getValueAt(guidTable.getSelectedRow(),0)));
-                        notesField.setText(String.valueOf(guidTable.getValueAt(guidTable.getSelectedRow(),1)));
+                        guidField.setText(String.valueOf(this.getValueAt(this.getSelectedRow(),0)));
+                        notesField.setText(String.valueOf(this.getValueAt(this.getSelectedRow(),1)));
                         addGUIDButton.setEnabled(true);
                     } else {
                         guidField.setText("");
                         notesField.setText("");
                         addGUIDButton.setEnabled(false);
+                        this.revalidate();
                         this.repaint();
                     }
                 } else {
@@ -69,13 +95,15 @@ public class GUIDTrackerTab {
                 }
                 deleteGUIDButton.setEnabled(true);
                 super.valueChanged(e);
+                this.revalidate();
+                this.repaint();
             }
 
             @Override
             protected void processFocusEvent(FocusEvent e){
                 if(e.getID() == FocusEvent.FOCUS_LOST){
                     if(e.getOppositeComponent() != notesField && e.getOppositeComponent() != guidField && e.getOppositeComponent() != deleteGUIDButton){
-                        guidTable.clearSelection();
+                        this.clearSelection();
                     }
                 }
             }
