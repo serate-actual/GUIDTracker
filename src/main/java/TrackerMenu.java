@@ -12,10 +12,10 @@ import java.util.List;
 
 public class TrackerMenu implements ContextMenuItemsProvider {
     private final MontoyaApi api;
-    private final GUIDTable guidDataModel;
-    public TrackerMenu(MontoyaApi api, GUIDTable guidDataModel){
+    private final GUIDTrackerTab guidTab;
+    public TrackerMenu(MontoyaApi api, GUIDTrackerTab guidTab){
         this.api = api;
-        this.guidDataModel = guidDataModel;
+        this.guidTab = guidTab;
     }
     private String getSelection(ContextMenuEvent event){
         if (event.messageEditorRequestResponse().isPresent()) {
@@ -45,8 +45,9 @@ public class TrackerMenu implements ContextMenuItemsProvider {
         Register.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                guidDataModel.addRow(new String[]{getSelection(event),"Go to the GUID Tracker tab and set the value"});
-                guidDataModel.fireTableDataChanged();
+                guidTab.getDataModel().addRow(new String[]{getSelection(event),"Go to the GUID Tracker tab and set the value"});
+                guidTab.getGuidTable().revalidate();
+                guidTab.getGuidTable().repaint();
             }
         });
         menuItemList.add(Register);
@@ -56,7 +57,7 @@ public class TrackerMenu implements ContextMenuItemsProvider {
         // runs IF something is selected
         // Identify all related GUIDs
         menuItemList.add(new JSeparator(SwingConstants.HORIZONTAL));
-        String[] matches = guidDataModel.checkGUID(getSelection(event));
+        String[] matches = this.guidTab.getDataModel().checkGUID(getSelection(event));
         if(matches.length > 0) {
             Iterator<String> searchResults = Arrays.stream(matches).iterator();
             while (searchResults.hasNext()) {
