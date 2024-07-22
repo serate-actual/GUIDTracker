@@ -14,6 +14,7 @@ public class GUIDTrackerTab {
     private JTextField guidField;
     private JTextField notesField;
     private JButton deleteGUIDButton;
+    private JComboBox colorSelector;
     private GUIDTableModel datamodel;
 
     public GUIDTrackerTab(){
@@ -45,7 +46,13 @@ public class GUIDTrackerTab {
     public JButton getDeleteGUIDButton(){
         return this.deleteGUIDButton;
     }
-
+    
+    public void addGuidValue(String guid, String notes){
+        // addRow takes a list - sometimes I don't want to have to pass a whole array
+        //this.datamodel.addRow(new String[]{String.valueOf(guidField.getText()), String.valueOf(notesField.getText())});
+        this.datamodel.addRow(new String[]{guid, notes});
+    }
+    
     private void createUIComponents( ) {
         // TODO: place custom component creation code here
         /*this.guidTable = new JTable(this.data, new String[]{"GUID","Notes"}){
@@ -140,7 +147,7 @@ public class GUIDTrackerTab {
                     // Add a row to the table
                     // check that it is enabled before adding the row
                     if(addGUIDButton.isEnabled() && guidField.getText() != ""){
-                        datamodel.addRow(new String[]{String.valueOf(guidField.getText()), String.valueOf(notesField.getText())});
+                        addGuidValue(String.valueOf(guidField.getText()), String.valueOf(notesField.getText()));
                     }
                 }
                 guidField.setText("");

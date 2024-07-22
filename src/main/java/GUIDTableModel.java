@@ -76,13 +76,9 @@ public class GUIDTableModel extends DefaultTableModel {
 
     @Override
     public void addRow(Object[] rowData){
-        // Manually append a value to the row
-        //Object[] fullRow = new Object[rowData.length+1];
-        //System.arraycopy(rowData,0,fullRow,0,rowData.length+1);
-        //fullRow[fullRow.length-1]="GREEN";
-        //super.addRow(fullRow);
-        //this.dataVector.addElement(rowData);
-        //this.dataVector.add(new String[]{"a", "a"});
+        // In case you pass a different length array in ( omitting optional arguments ) handle it gracefully
+        Object[] finalRow = new Object[this.columnIdentifiers.size()];
+        System.arraycopy(rowData,0,finalRow,0,this.columnIdentifiers.size());
         this.dataVector.add(rowData);
         this.fireTableDataChanged();
     }
