@@ -114,6 +114,7 @@ public class GUIDTrackerTab {
             protected void processFocusEvent(FocusEvent e){
                 if(e.getID() == FocusEvent.FOCUS_LOST){
                     if(e.getOppositeComponent() != notesField && e.getOppositeComponent() != guidField && e.getOppositeComponent() != deleteGUIDButton){
+
                         this.clearSelection();
                     }
                 }
@@ -139,7 +140,7 @@ public class GUIDTrackerTab {
                     // No rows are selected, add a guid
                     // Add a row to the table
                     // check that it is enabled before adding the row
-                    if(addGUIDButton.isEnabled() && guidField.getText() != ""){
+                    if(addGUIDButton.isEnabled() && !guidField.getText().isBlank()){
                         datamodel.addRow(new String[]{String.valueOf(guidField.getText()), String.valueOf(notesField.getText())});
                     }
                 }
