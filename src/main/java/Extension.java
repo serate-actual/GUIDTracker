@@ -17,7 +17,7 @@ public class Extension implements BurpExtension {
         api.userInterface().registerSuiteTab("GUID Tracker", trackerTab.getUI());
 
         // Context menu setup
-        TrackerMenu contextMenu = new TrackerMenu(api, trackerTab.getDataModel());
+        TrackerMenu contextMenu = new TrackerMenu(api, trackerTab);
         // Register the context menu
         api.userInterface().registerContextMenuItemsProvider(contextMenu);
 
@@ -35,8 +35,6 @@ public class Extension implements BurpExtension {
                 row[1] = notes;
                 trackerTab.getDataModel().addRow(row);
             }
-            //this.api.persistence().extensionData().getStringList("guid")
-            //trackerTab.getDataModel().setFromColumnData((ArrayList<String>) this.api.persistence().extensionData().getStringList("guid"), (ArrayList<String>) this.api.persistence().extensionData().getStringList("notes"));
         }
     }
 }

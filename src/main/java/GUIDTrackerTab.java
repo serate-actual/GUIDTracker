@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.JTableHeader;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -22,6 +24,10 @@ public class GUIDTrackerTab {
     }
     public JPanel getUI(){
         return this.ui;
+    }
+
+    public JTable getGuidTable(){
+        return this.guidTable;
     }
 
     public JButton getAddGUIDButton(){
@@ -57,14 +63,19 @@ public class GUIDTrackerTab {
         };*/
         this.datamodel = new GUIDTableModel();
         this.guidTable = new JTable(datamodel){
+            public void jTable(){
+                this.getModel().addTableModelListener( new TableModelListener() {
+                    public void tableChanged(TableModelEvent e) {
+                        System.out.println("SOMETHING IS HAPPENING");
+                        System.out.println(e.getType());
+                    }
+                }
+                );
+            }
 
             @Override
-            public void tableChanged(TableModelEvent e){
-                System.out.println("SOMETHING IS HAPPENING");
-                System.out.println(e.getType());
-                super.tableChanged(e);
-                this.revalidate();
-                this.repaint();
+            protected JTableHeader createDefaultTableHeader() {
+                return super.createDefaultTableHeader();
             }
 
             @Override
@@ -113,6 +124,7 @@ public class GUIDTrackerTab {
                 super.changeSelection(rowIndex, columnIndex, true, false);
             }
         };
+
         this.addGUIDButton = new JButton();
         this.addGUIDButton.addMouseListener(new MouseAdapter() {
             @Override
