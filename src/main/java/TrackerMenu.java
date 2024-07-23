@@ -1,4 +1,5 @@
 import burp.api.montoya.MontoyaApi;
+import burp.api.montoya.core.HighlightColor;
 import burp.api.montoya.ui.contextmenu.ContextMenuEvent;
 import burp.api.montoya.ui.contextmenu.ContextMenuItemsProvider;
 import burp.api.montoya.ui.contextmenu.MessageEditorHttpRequestResponse;

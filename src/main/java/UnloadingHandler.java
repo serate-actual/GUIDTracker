@@ -10,6 +10,7 @@ public class UnloadingHandler implements ExtensionUnloadingHandler {
     private PersistedList<String> columnIdentifiers;
     private PersistedList<String> dataModelGUID;
     private PersistedList<String> dataModelNotes;
+    private PersistedList<String> dataModelColor;
     public UnloadingHandler(GUIDTableModel table, MontoyaApi api){
         this.api = api;
         this.table = table;
@@ -24,9 +25,12 @@ public class UnloadingHandler implements ExtensionUnloadingHandler {
         this.api.persistence().extensionData().setStringList("guidColumns",columnIdentifiers);
         this.dataModelGUID = PersistedList.persistedStringList();
         this.dataModelNotes = PersistedList.persistedStringList();
+        this.dataModelColor = PersistedList.persistedStringList();
         dataModelGUID.addAll(this.table.getColumnData(0));
         dataModelNotes.addAll(this.table.getColumnData(1));
+        dataModelColor.addAll(this.table.getColumnData(2));
         this.api.persistence().extensionData().setStringList("guid",dataModelGUID);
         this.api.persistence().extensionData().setStringList("notes",dataModelNotes);
+        this.api.persistence().extensionData().setStringList("color",dataModelColor);
     }
 }

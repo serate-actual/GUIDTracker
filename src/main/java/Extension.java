@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Extension implements BurpExtension {
     private MontoyaApi api;
     private UnloadingHandler unloadingHandler;
+    private RequestResponseHandler requestResponseHandler;
     @Override
     public void initialize(MontoyaApi api) {
         this.api = api;
@@ -16,6 +17,7 @@ public class Extension implements BurpExtension {
         GUIDTrackerTab trackerTab = new GUIDTrackerTab();
         api.userInterface().registerSuiteTab("GUID Tracker", trackerTab.getUI());
 
+
         // Context menu setup
         TrackerMenu contextMenu = new TrackerMenu(api, trackerTab);
         // Register the context menu
@@ -24,17 +26,22 @@ public class Extension implements BurpExtension {
         // set persistence
         UnloadingHandler unloadingHandler = new UnloadingHandler(trackerTab.getDataModel(), this.api);
         api.extension().registerUnloadingHandler(unloadingHandler);
-        if(!this.api.persistence().extensionData().getStringList("guid").isEmpty()){
+        if(this.api.persistence().extensionData().stringListKeys().contains("guid") && this.api.persistence().extensionData().stringListKeys().contains("notes") && this.api.persistence().extensionData().stringListKeys().contains("color")){
             int size = this.api.persistence().extensionData().getStringList("guid").size();
             int i;
             for(i = 0; i < size; i++){
                 String guid = this.api.persistence().extensionData().getStringList("guid").get(i);
                 String notes = this.api.persistence().extensionData().getStringList("notes").get(i);
-                Object[] row = new Object[2];
+                String color = this.api.persistence().extensionData().getStringList("color").get(i);
+                Object[] row = new Object[3];
                 row[0] = guid;
                 row[1] = notes;
+                row[2] = HighlightColor.from(color);
                 trackerTab.getDataModel().addRow(row);
             }
         }
+
+        api.proxy().registerRequestHandler(new RequestResponseHandler(trackerTab.getDataModel()));
+        api.proxy().registerResponseHandler(new RequestResponseHandler(trackerTab.getDataModel()));
     }
 }
