@@ -1,9 +1,4 @@
 import burp.api.montoya.proxy.http.*;
-import com.sun.net.httpserver.Request;
-
-import javax.swing.*;
-import java.util.Arrays;
-import java.util.Iterator;
 
 public class RequestResponseHandler implements ProxyRequestHandler, ProxyResponseHandler {
     private GUIDTableModel dataModel;
@@ -14,12 +9,9 @@ public class RequestResponseHandler implements ProxyRequestHandler, ProxyRespons
 
     @Override
     public ProxyRequestReceivedAction handleRequestReceived(InterceptedRequest interceptedRequest) {
-        HighlightColor color = this.dataModel.checkForGUID(interceptedRequest);
-        System.out.println(color);
+        HighlightColor color = this.dataModel.searchAndGetGUIDcolor(interceptedRequest.toString());
         if (color != HighlightColor.NONE) {
             interceptedRequest.annotations().setHighlightColor(color.getBColor());
-            System.out.println("HiGHLIOGHTINg");
-            System.out.println(color);
         }
         return ProxyRequestReceivedAction.continueWith(interceptedRequest);
     }
@@ -31,6 +23,10 @@ public class RequestResponseHandler implements ProxyRequestHandler, ProxyRespons
 
     @Override
     public ProxyResponseReceivedAction handleResponseReceived(InterceptedResponse interceptedResponse) {
+        HighlightColor color = this.dataModel.searchAndGetGUIDcolor(interceptedResponse.toString());
+        if (color != HighlightColor.NONE) {
+            interceptedResponse.annotations().setHighlightColor(color.getBColor());
+        }
         return ProxyResponseReceivedAction.continueWith(interceptedResponse);
     }
 

@@ -1,8 +1,5 @@
-import burp.api.montoya.proxy.http.InterceptedRequest;
-
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.Highlighter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
@@ -83,7 +80,7 @@ public class GUIDTableModel extends DefaultTableModel {
         // In case you pass a different length array in ( omitting optional arguments ) handle it gracefully
         Object[] finalRow = new Object[this.columnIdentifiers.size()];
         System.arraycopy(rowData,0,finalRow,0,this.columnIdentifiers.size());
-        this.dataVector.add(rowData);
+        this.dataVector.add(finalRow);
         this.fireTableDataChanged();
     }
 
@@ -93,17 +90,52 @@ public class GUIDTableModel extends DefaultTableModel {
         this.fireTableDataChanged();
     }
 
-    public HighlightColor checkForGUID(InterceptedRequest request){
+    public HighlightColor searchAndGetGUIDcolor(String request){
         for (Object itemObject : this.dataVector) {
             Object[] item = (Object[])itemObject;
             if (item != null) {
-                if (request.contains(item[0].toString(), false) && item[2] != HighlightColor.NONE){
+                if (request.contains(item[0].toString()) && item[2] != HighlightColor.NONE){
                     // MATCH has occurred
-                    return (HighlightColor) item[2];
+                    return HighlightColor.from(item[2].toString());
                 }
             }
         }
         return HighlightColor.NONE;
+    }
+
+    public String[] containsGUID(String selection){
+        String[] message = new String[2];
+        message[0] = "";
+        for (Object itemObject : this.dataVector) {
+            Object[] item = (Object[])itemObject;
+            if (item != null) {
+                if (selection.contains(item[0].toString())){
+                    // MATCH has occurred
+                    message[1] = item[0].toString();
+                     int selectionIndex = selection.indexOf(item[0].toString());
+                    // Check if the selection is 20 characters greater than the item
+                    if (selection.length() - item[0].toString().length() < 20){
+                        // Just return the whole selection
+                        message[0] = selection;
+                    } else {
+                        // Check if left side is sticking out
+                        if (selectionIndex > 10){
+                            message[0] += " . . . ";
+                            message[0] += selection.substring(selectionIndex-10,selectionIndex);
+                        } else {
+                            message[0] += selection.substring(0,selectionIndex);
+                        }
+                        // Do the same as above, but for the right side
+                        if (selectionIndex + item[0].toString().length() - selection.length() < -10){
+                            message[0] += selection.substring(selectionIndex,selectionIndex+10) + " . . . ";
+                        } else {
+                            message[0] += selection.substring(selectionIndex,selection.length());
+                        }
+                    }
+                }
+            }
+        }
+        return message;
     }
 
     public String[] checkGUID(String guid){
@@ -131,18 +163,9 @@ public class GUIDTableModel extends DefaultTableModel {
        ArrayList<String> columnData = new ArrayList<>();
        for (Object itemObject : this.dataVector){
            Object[] item = (Object[]) itemObject;
-           System.out.println(item[columnIndex]);
            columnData.add(item[columnIndex].toString());
        }
        return columnData;
-    }
-
-    public void setFromColumnData(ArrayList<String> guids, ArrayList<String> notes){
-        int i;
-        for(i = 0; i < guids.size(); i++){
-            System.out.println(guids.get(i));
-            System.out.println(notes.get(i));
-        }
     }
 
 }

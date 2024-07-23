@@ -86,15 +86,6 @@ public class GUIDTrackerTab {
         //Handle creation of the datamodel and JTable for the guids/notes
         this.datamodel = new GUIDTableModel();
         this.guidTable = new JTable(datamodel){
-            public void JTable(){
-                this.getModel().addTableModelListener( new TableModelListener() {
-                    public void tableChanged(TableModelEvent e) {
-                        System.out.println("SOMETHING IS HAPPENING");
-                        System.out.println(e.getType());
-                    }
-                }
-                );
-            }
 
             @Override
             protected JTableHeader createDefaultTableHeader() {
@@ -111,7 +102,6 @@ public class GUIDTrackerTab {
                         addGUIDButton.setText("Edit GUID");
                         guidField.setText(String.valueOf(this.getValueAt(this.getSelectedRow(),0)));
                         notesField.setText(String.valueOf(this.getValueAt(this.getSelectedRow(),1)));
-                        System.out.println(this.getValueAt(this.getSelectedRow(),2));
                         colorSelector.setSelectedItem(HighlightColor.from((String) this.getValueAt(this.getSelectedRow(),2)));
                         colorSelector.repaint();
                         addGUIDButton.setEnabled(true);

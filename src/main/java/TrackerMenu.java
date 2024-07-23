@@ -52,9 +52,6 @@ public class TrackerMenu implements ContextMenuItemsProvider {
             }
         });
         menuItemList.add(Register);
-        //JMenu identifyMenu = new JMenu("Identify");
-
-        // Adding the submenu which we will REPLACE with the appropriate GUID
         // runs IF something is selected
         // Identify all related GUIDs
         menuItemList.add(new JSeparator(SwingConstants.HORIZONTAL));
@@ -65,7 +62,15 @@ public class TrackerMenu implements ContextMenuItemsProvider {
                 menuItemList.add(new JMenuItem(String.valueOf(searchResults.next())));
             }
         } else {
-            menuItemList.add(new JMenuItem("No matches detected."));
+            Object[] contexts = this.guidTab.getDataModel().containsGUID(getSelection(event));
+            if (!contexts[0].toString().isBlank()){
+                menuItemList.add(new JMenuItem("Selection contains a registered GUID: "));
+                menuItemList.add(new JMenuItem(contexts[0].toString()));
+                menuItemList.add(new JMenuItem("Notes: "));
+                menuItemList.add(new JMenuItem(String.valueOf(contexts[1].toString())));
+            } else {
+                menuItemList.add(new JMenuItem("No matches detected."));
+            }
         }
         return menuItemList;
     }
