@@ -1,5 +1,8 @@
+import burp.api.montoya.proxy.http.InterceptedRequest;
+
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.Highlighter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
@@ -12,6 +15,7 @@ public class GUIDTableModel extends DefaultTableModel {
         this.columnIdentifiers = new Vector();
         this.columnIdentifiers.add("GUID");
         this.columnIdentifiers.add("Notes");
+        this.columnIdentifiers.add("Color");
         this.dataVector = new Vector();
     }
 
@@ -89,6 +93,20 @@ public class GUIDTableModel extends DefaultTableModel {
         this.fireTableDataChanged();
     }
 
+    public HighlightColor checkForGUID(InterceptedRequest request){
+        for (Object itemObject : this.dataVector) {
+            String[] item = (String[])itemObject;
+            if (item != null) {
+                if (request.contains(item[0], false) && HighlightColor.from(item[3]) != HighlightColor.NONE){
+                    // MATCH has occurred
+                    System.out.println(item[3]);
+                    return HighlightColor.from(item[3]);
+                }
+            }
+        }
+        return HighlightColor.NONE;
+    }
+
     public String[] checkGUID(String guid){
         ArrayList<String> matches = new ArrayList<String>();
         //iterate through all the items in the list to see if they match.
@@ -113,8 +131,9 @@ public class GUIDTableModel extends DefaultTableModel {
     public ArrayList<String> getColumnData(int columnIndex){
        ArrayList<String> columnData = new ArrayList<>();
        for (Object itemObject : this.dataVector){
-           String[] item = (String[])itemObject;
-           columnData.add(item[columnIndex]);
+           Object[] item = (Object[]) itemObject;
+           System.out.println(item[columnIndex]);
+           columnData.add(item[columnIndex].toString());
        }
        return columnData;
     }
