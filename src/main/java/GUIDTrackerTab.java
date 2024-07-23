@@ -163,7 +163,7 @@ public class GUIDTrackerTab {
                     //datamodel.editRow(guidTable.getSelectedRow()-1, String.valueOf(guidField.getText()), String.valueOf(notesField.getText()));
                     datamodel.setValueAt(String.valueOf(guidField.getText()), guidTable.getSelectedRow(), 0);
                     datamodel.setValueAt(String.valueOf(notesField.getText()), guidTable.getSelectedRow(), 1);
-                    datamodel.setValueAt(String.valueOf(colorSelector.getSelectedItem()), guidTable.getSelectedRow(), 2);
+                    datamodel.setValueAt((HighlightColor) colorSelector.getSelectedItem(), guidTable.getSelectedRow(), 2);
                 } else {
                     // No rows are selected, add a guid
                     // Add a row to the table

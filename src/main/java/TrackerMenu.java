@@ -46,7 +46,7 @@ public class TrackerMenu implements ContextMenuItemsProvider {
         Register.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                guidTab.getDataModel().addRow(new String[]{getSelection(event),"Go to the GUID Tracker tab and set the value"});
+                guidTab.getDataModel().addRow(new Object[]{getSelection(event),"Go to the GUID Tracker tab and set the value", HighlightColor.NONE});
                 guidTab.getGuidTable().revalidate();
                 guidTab.getGuidTable().repaint();
             }
@@ -58,11 +58,11 @@ public class TrackerMenu implements ContextMenuItemsProvider {
         // runs IF something is selected
         // Identify all related GUIDs
         menuItemList.add(new JSeparator(SwingConstants.HORIZONTAL));
-        String[] matches = this.guidTab.getDataModel().checkGUID(getSelection(event));
+        Object[] matches = this.guidTab.getDataModel().checkGUID(getSelection(event));
         if(matches.length > 0) {
-            Iterator<String> searchResults = Arrays.stream(matches).iterator();
+            Iterator<Object> searchResults = Arrays.stream(matches).iterator();
             while (searchResults.hasNext()) {
-                menuItemList.add(new JMenuItem(searchResults.next()));
+                menuItemList.add(new JMenuItem(String.valueOf(searchResults.next())));
             }
         } else {
             menuItemList.add(new JMenuItem("No matches detected."));

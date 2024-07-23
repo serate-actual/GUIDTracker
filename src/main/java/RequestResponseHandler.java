@@ -14,7 +14,13 @@ public class RequestResponseHandler implements ProxyRequestHandler, ProxyRespons
 
     @Override
     public ProxyRequestReceivedAction handleRequestReceived(InterceptedRequest interceptedRequest) {
-        System.out.println(this.dataModel.checkForGUID(interceptedRequest));
+        HighlightColor color = this.dataModel.checkForGUID(interceptedRequest);
+        System.out.println(color);
+        if (color != HighlightColor.NONE) {
+            interceptedRequest.annotations().setHighlightColor(color.getBColor());
+            System.out.println("HiGHLIOGHTINg");
+            System.out.println(color);
+        }
         return ProxyRequestReceivedAction.continueWith(interceptedRequest);
     }
 

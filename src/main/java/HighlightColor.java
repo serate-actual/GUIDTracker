@@ -32,7 +32,11 @@ public enum HighlightColor {
     public Color getColor(){
         return this.color;
     }
-
+    
+    public burp.api.montoya.core.HighlightColor getBColor(){
+        return this.highlightColor;
+    }
+    
     /**
      * Factory method to build HighlightColor from display name string
      * @param name Color's display name

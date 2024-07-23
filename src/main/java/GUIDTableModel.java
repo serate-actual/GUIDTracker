@@ -95,12 +95,11 @@ public class GUIDTableModel extends DefaultTableModel {
 
     public HighlightColor checkForGUID(InterceptedRequest request){
         for (Object itemObject : this.dataVector) {
-            String[] item = (String[])itemObject;
+            Object[] item = (Object[])itemObject;
             if (item != null) {
-                if (request.contains(item[0], false) && HighlightColor.from(item[3]) != HighlightColor.NONE){
+                if (request.contains(item[0].toString(), false) && item[2] != HighlightColor.NONE){
                     // MATCH has occurred
-                    System.out.println(item[3]);
-                    return HighlightColor.from(item[3]);
+                    return (HighlightColor) item[2];
                 }
             }
         }
@@ -108,10 +107,10 @@ public class GUIDTableModel extends DefaultTableModel {
     }
 
     public String[] checkGUID(String guid){
-        ArrayList<String> matches = new ArrayList<String>();
+        ArrayList<Object> matches = new ArrayList<Object>();
         //iterate through all the items in the list to see if they match.
         for (Object itemObject : this.dataVector) {
-            String[] item = (String[])itemObject;
+            Object[] item = (Object[])itemObject;
             if (item != null) {
                 if (guid.equals(item[0])){
                     // MATCH has occurred
