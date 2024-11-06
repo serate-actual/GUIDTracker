@@ -17,8 +17,11 @@ public class Extension implements BurpExtension {
         GUIDTrackerTab trackerTab = new GUIDTrackerTab();
         api.userInterface().registerSuiteTab("GUID Tracker", trackerTab.getUI());
 
+        // Add GUID Adder Tab
+        GUIDAdder adderTab = new GUIDAdder(trackerTab);
+
         // Context menu setup
-        TrackerMenu contextMenu = new TrackerMenu(api, trackerTab);
+        TrackerMenu contextMenu = new TrackerMenu(api, trackerTab, adderTab);
         // Register the context menu
         api.userInterface().registerContextMenuItemsProvider(contextMenu);
 

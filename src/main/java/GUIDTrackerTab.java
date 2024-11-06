@@ -129,6 +129,14 @@ public class GUIDTrackerTab {
             }
 
             @Override
+            public void tableChanged(TableModelEvent e){
+                System.out.println("Table changed");
+                //this.revalidate();
+                this.repaint();
+                super.tableChanged(e);
+            }
+
+            @Override
             protected void processFocusEvent(FocusEvent e){
                 if(e.getID() == FocusEvent.FOCUS_LOST){
                     if(e.getOppositeComponent() != notesField && e.getOppositeComponent() != guidField && e.getOppositeComponent() != deleteGUIDButton && e.getOppositeComponent() != colorSelector){

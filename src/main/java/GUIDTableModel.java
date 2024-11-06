@@ -103,39 +103,37 @@ public class GUIDTableModel extends DefaultTableModel {
         return HighlightColor.NONE;
     }
 
-    public String[] containsGUID(String selection){
-        String[] message = new String[2];
-        message[0] = "";
+    public Object[] containsGUID(String selection){
+        ArrayList<Object> locations = new ArrayList<Object>();
         for (Object itemObject : this.dataVector) {
             Object[] item = (Object[])itemObject;
             if (item != null) {
                 if (selection.contains(item[0].toString())){
                     // MATCH has occurred
-                    message[1] = item[0].toString();
-                     int selectionIndex = selection.indexOf(item[0].toString());
-                    // Check if the selection is 20 characters greater than the item
-                    if (selection.length() - item[0].toString().length() < 20){
-                        // Just return the whole selection
-                        message[0] = selection;
-                    } else {
-                        // Check if left side is sticking out
-                        if (selectionIndex > 10){
-                            message[0] += " . . . ";
-                            message[0] += selection.substring(selectionIndex-10,selectionIndex);
-                        } else {
-                            message[0] += selection.substring(0,selectionIndex);
-                        }
-                        // Do the same as above, but for the right side
-                        if (selectionIndex + item[0].toString().length() - selection.length() < -10){
-                            message[0] += selection.substring(selectionIndex,selectionIndex+10) + " . . . ";
-                        } else {
-                            message[0] += selection.substring(selectionIndex,selection.length());
+                    int startIndex = 0;
+                    int selectionIndex = selection.indexOf(item[0].toString(),startIndex);
+                    System.out.println(selectionIndex);
+                    while (selectionIndex != -1 ){
+                        selectionIndex = selection.indexOf(item[0].toString(),startIndex);
+                        if (selectionIndex != -1) {
+                            Object[] selectBounds = new Object[5];
+                            selectBounds[0] = selectionIndex;
+                            selectBounds[1] = item[0].toString().length() + (int) selectBounds[0];
+                            startIndex = (int) selectBounds[1];
+                            // guid
+                            selectBounds[2] = item[0];
+                            // notes
+                            selectBounds[3] = item[1];
+                            // color
+                            selectBounds[4] = item[2];
+                            locations.add(selectBounds);
+                            //selectBounds.removeAll();
                         }
                     }
                 }
             }
         }
-        return message;
+        return locations.toArray();
     }
 
     public String[] checkGUID(String guid){

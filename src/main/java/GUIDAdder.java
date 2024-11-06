@@ -1,60 +1,57 @@
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-public class GUIDAdder extends JDialog {
-    private JPanel contentPane;
-    private JButton buttonOK;
-    private JButton buttonCancel;
-    private JTextPane textPane1;
-    private JTextField textField1;
+public class GUIDAdder {
+    private JPanel mainPanel;
+    private JTextArea notes;
+    private JButton addGUIDButton;
+    private GUIDTableModel datamodel;
+    private String guid;
+    private GUIDTrackerTab trackerTab;
 
-    public GUIDAdder() {
-        setContentPane(contentPane);
-        setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
-
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
-
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    public GUIDAdder(GUIDTrackerTab trackerTab){
+        this.datamodel = trackerTab.getDataModel();
+        this.trackerTab = trackerTab;
+        this.guid = "";
     }
 
-    private void onOK() {
-        // add your code here
-        dispose();
+    public void setGUID(String guid){
+        this.guid = guid;
     }
 
-    private void onCancel() {
-        // add your code here if necessary
-        dispose();
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+        this.mainPanel = new JPanel();
+        this.notes = new JTextArea();
+        this.notes.setText("");
+        this.addGUIDButton = new JButton();
+        this.addGUIDButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if(notes.getText().isBlank()){
+                    // No text
+                    datamodel.addRow(new String[]{guid, "Go to the GUID Tracker tab and set the value", "None".toString()});
+                    trackerTab.getGuidTable().revalidate();
+                    trackerTab.getGuidTable().repaint();
+                    System.out.println("ADDING A GUID");
+                } else {
+                    // Is text
+                    datamodel.addRow(new String[]{guid, notes.getText(), "None".toString()});
+                    datamodel.fireTableDataChanged();
+                    notes.setText("");
+                    trackerTab.getGuidTable().revalidate();
+                    trackerTab.getGuidTable().repaint();
+                    System.out.println("ADDING A GUID");
+                }
+            }
+        });
+        this.mainPanel.repaint();
     }
 
-    public static void main(String[] args) {
-        GUIDAdder dialog = new GUIDAdder();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
+
+
+    public JPanel getPanel(){
+        return this.mainPanel;
     }
 }

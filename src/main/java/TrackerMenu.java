@@ -5,6 +5,7 @@ import burp.api.montoya.ui.contextmenu.ContextMenuItemsProvider;
 import burp.api.montoya.ui.contextmenu.MessageEditorHttpRequestResponse;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,9 +15,11 @@ import java.util.List;
 public class TrackerMenu implements ContextMenuItemsProvider {
     private final MontoyaApi api;
     private final GUIDTrackerTab guidTab;
-    public TrackerMenu(MontoyaApi api, GUIDTrackerTab guidTab){
+    private final GUIDAdder adderMenu;
+    public TrackerMenu(MontoyaApi api, GUIDTrackerTab guidTab, GUIDAdder adderMenu){
         this.api = api;
         this.guidTab = guidTab;
+        this.adderMenu = adderMenu;
     }
     private String getSelection(ContextMenuEvent event){
         if (event.messageEditorRequestResponse().isPresent()) {
@@ -41,7 +44,7 @@ public class TrackerMenu implements ContextMenuItemsProvider {
     public List<Component> provideMenuItems(ContextMenuEvent event){
         List<Component> menuItemList = new ArrayList<>();
 
-        // Handle the new menu item
+        /* Handle the new menu item
         JMenuItem Register = new JMenuItem("Register GUID");
         Register.addMouseListener(new MouseAdapter() {
             @Override
@@ -51,10 +54,12 @@ public class TrackerMenu implements ContextMenuItemsProvider {
                 guidTab.getGuidTable().repaint();
             }
         });
-        menuItemList.add(Register);
+        menuItemList.add(Register);*/
+        adderMenu.setGUID(getSelection(event));
+        menuItemList.add(adderMenu.getPanel());
         // runs IF something is selected
         // Identify all related GUIDs
-        menuItemList.add(new JSeparator(SwingConstants.HORIZONTAL));
+        //menuItemList.add(new JSeparator(SwingConstants.HORIZONTAL));
         Object[] matches = this.guidTab.getDataModel().checkGUID(getSelection(event));
         if(matches.length > 0) {
             Iterator<Object> searchResults = Arrays.stream(matches).iterator();
@@ -63,11 +68,38 @@ public class TrackerMenu implements ContextMenuItemsProvider {
             }
         } else {
             Object[] contexts = this.guidTab.getDataModel().containsGUID(getSelection(event));
-            if (!contexts[0].toString().isBlank()){
-                menuItemList.add(new JMenuItem("Selection contains a registered GUID: "));
-                menuItemList.add(new JMenuItem(contexts[0].toString()));
-                menuItemList.add(new JMenuItem("Notes: "));
-                menuItemList.add(new JMenuItem(String.valueOf(contexts[1].toString())));
+            if (contexts.length>0){
+                GUIDContextMenu menu = new GUIDContextMenu();
+                try {
+                    menu.setGUIDPaneText(getSelection(event),contexts);
+                } catch (BadLocationException e) {
+                    throw new RuntimeException(e);
+                }
+                Iterator<Object> searchResults = Arrays.stream(contexts).iterator();
+                String lastGuid = "";
+
+                // Generating the results pane
+                while (searchResults.hasNext()) {
+                    Object[] guidMatch = (Object[])searchResults.next();
+                    String text = "";
+                    System.out.println("new match");
+                    System.out.println(guidMatch[0].toString());
+                    System.out.println(guidMatch[1].toString());
+                    System.out.println(guidMatch[2].toString());
+                    System.out.println(guidMatch[3].toString());
+                    System.out.println(guidMatch[4].toString());
+                    if (menu.getNotesPaneText().isBlank()){
+                        text = guidMatch[4].toString() + ": " + guidMatch[3].toString();
+                    } else {
+                        text = menu.getNotesPaneText() + '\n' + guidMatch[4].toString() + ": " + guidMatch[3].toString();
+                    }
+                    menu.setNotesPaneText(text);
+                }
+                menuItemList.add(menu.getPanel());
+                //menuItemList.add(new JMenuItem("Selection contains a registered GUID: "));
+                //menuItemList.add(new JMenuItem(contexts[0].toString()));
+                //menuItemList.add(new JMenuItem("Notes: "));
+                //menuItemList.add(new JMenuItem(String.valueOf(contexts[1].toString())));
             } else {
                 menuItemList.add(new JMenuItem("No matches detected."));
             }
